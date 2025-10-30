@@ -1,0 +1,103 @@
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Collections;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
+using System.Text;
+using System;
+
+class Result
+{
+
+    /*
+     * Complete the 'connectedCell' function below.
+     *
+     * The function is expected to return an INTEGER.
+     * The function accepts 2D_INTEGER_ARRAY matrix as parameter.
+     */
+
+    public static int connectedCell(List<List<int>> matrix)
+    {
+        int rows = matrix.Count;
+        int cols = matrix[0].Count;
+
+        bool[][] visited = new bool[rows][];
+        for (int i = 0; i < rows; i++)
+        {
+            visited[i] = new bool[cols];
+        }
+
+        int largestRegion = 0;
+        int[] rowDir = { -1, -1, -1, 0, 0, 1, 1, 1 };
+        int[] colDir = { -1, 0, 1, -1, 1, -1, 0, 1 };
+
+        int ExploreRegion(int row, int col)
+        {
+            visited[row][col] = true;
+            int size = 1;
+
+            for (int d = 0; d < 8; d++)
+            {
+                int newRow = row + rowDir[d];
+                int newCol = col + colDir[d];
+
+                if (newRow >= 0 && newRow < rows &&
+                    newCol >= 0 && newCol < cols &&
+                    matrix[newRow][newCol] == 1 &&
+                    !visited[newRow][newCol])
+                {
+                    size += ExploreRegion(newRow, newCol);
+                }
+            }
+
+            return size;
+        }
+
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < cols; j++)
+            {
+                if (matrix[i][j] == 1 && !visited[i][j])
+                {
+                    int regionSize = ExploreRegion(i, j);
+                    largestRegion = Math.Max(largestRegion, regionSize);
+                }
+            }
+        }
+
+        return largestRegion;
+    }
+
+}
+
+class Solution
+{
+    public static void Main(string[] args)
+    {
+        TextWriter textWriter = new StreamWriter(@System.Environment.GetEnvironmentVariable("OUTPUT_PATH"), true);
+
+        int n = Convert.ToInt32(Console.ReadLine().Trim());
+
+        int m = Convert.ToInt32(Console.ReadLine().Trim());
+
+        List<List<int>> matrix = new List<List<int>>();
+
+        for (int i = 0; i < n; i++)
+        {
+            matrix.Add(Console.ReadLine().TrimEnd().Split(' ').ToList().Select(matrixTemp => Convert.ToInt32(matrixTemp)).ToList());
+        }
+
+        int result = Result.connectedCell(matrix);
+
+        textWriter.WriteLine(result);
+
+        textWriter.Flush();
+        textWriter.Close();
+    }
+}
