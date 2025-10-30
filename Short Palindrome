@@ -1,0 +1,72 @@
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Collections;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
+using System.Text;
+using System;
+
+class Result
+{
+
+    /*
+     * Complete the 'shortPalindrome' function below.
+     *
+     * The function is expected to return an INTEGER.
+     * The function accepts STRING s as parameter.
+     */
+
+    public static int shortPalindrome(string s)
+    {
+        const int MOD = 1000000007;
+        int[] singleCount = new int[26];
+        int[,] pairCount = new int[26, 26];
+        int[] tripletCount = new int[26];
+        long palindromeCount = 0;
+
+        foreach (char ch in s)
+        {
+            int index = ch - 'a';
+
+            palindromeCount = (palindromeCount + tripletCount[index]) % MOD;
+
+            for (int j = 0; j < 26; j++)
+            {
+                tripletCount[j] = (int)((tripletCount[j] + pairCount[j, index]) % MOD);
+            }
+
+            for (int j = 0; j < 26; j++)
+            {
+                pairCount[j, index] = (pairCount[j, index] + singleCount[j]) % MOD;
+            }
+
+            singleCount[index]++;
+        }
+
+        return (int)(palindromeCount % MOD);
+    }
+
+}
+
+class Solution
+{
+    public static void Main(string[] args)
+    {
+        TextWriter textWriter = new StreamWriter(@System.Environment.GetEnvironmentVariable("OUTPUT_PATH"), true);
+
+        string s = Console.ReadLine();
+
+        int result = Result.shortPalindrome(s);
+
+        textWriter.WriteLine(result);
+
+        textWriter.Flush();
+        textWriter.Close();
+    }
+}
