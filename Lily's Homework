@@ -1,0 +1,86 @@
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Collections;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
+using System.Text;
+using System;
+
+class Result
+{
+
+    /*
+     * Complete the 'lilysHomework' function below.
+     *
+     * The function is expected to return an INTEGER.
+     * The function accepts INTEGER_ARRAY arr as parameter.
+     */
+
+    public static int lilysHomework(List<int> arr)
+    {
+        List<int> aOrder = new List<int>(arr);
+        aOrder.Sort();
+
+    List<int> dOrder = new List<int>(aOrder);
+    dOrder.Reverse();
+
+    int CountSwaps(List<int> original, List<int> target)
+    {
+        bool[] visited = new bool[original.Count];
+        int swaps = 0;
+
+        for (int i = 0; i < original.Count; i++)
+        {
+            if (visited[i] || original[i] == target[i])
+                continue;
+
+            int cycle = 0;
+            int j = i;
+
+            while (!visited[j])
+            {
+                visited[j] = true;
+                cycle++;
+
+                int nextIndex = target.IndexOf(original[j]);
+                j = nextIndex;
+            }
+
+            swaps += (cycle - 1);
+        }
+
+        return swaps;
+    }
+
+    int swapsA = CountSwaps(new List<int>(arr), aOrder);
+    int swapsD = CountSwaps(new List<int>(arr), dOrder);
+
+    return Math.Min(swapsA, swapsD);
+    }
+
+}
+
+class Solution
+{
+    public static void Main(string[] args)
+    {
+        TextWriter textWriter = new StreamWriter(@System.Environment.GetEnvironmentVariable("OUTPUT_PATH"), true);
+
+        int n = Convert.ToInt32(Console.ReadLine().Trim());
+
+        List<int> arr = Console.ReadLine().TrimEnd().Split(' ').ToList().Select(arrTemp => Convert.ToInt32(arrTemp)).ToList();
+
+        int result = Result.lilysHomework(arr);
+
+        textWriter.WriteLine(result);
+
+        textWriter.Flush();
+        textWriter.Close();
+    }
+}
