@@ -1,0 +1,88 @@
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Collections;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
+using System.Text;
+using System;
+
+class Result
+{
+
+    /*
+     * Complete the 'redJohn' function below.
+     *
+     * The function is expected to return an INTEGER.
+     * The function accepts INTEGER n as parameter.
+     */
+
+    public static int redJohn(int n)
+    {
+        int[] ways = new int[n + 1];
+        ways[0] = 1;
+
+        for (int i = 1; i <= n; i++)
+        {
+            ways[i] = ways[i - 1]; 
+            if (i >= 4)
+            {
+                ways[i] += ways[i - 4]; 
+            }
+        }
+
+        int W = ways[n];
+
+        if (W < 2)
+        return 0;
+
+        bool[] prime = new bool[W + 1];
+        for (int i = 2; i <= W; i++)
+        prime[i] = true;
+
+        for (int p = 2; p * p <= W; p++)
+        {
+            if (prime[p])
+            {
+                for (int multiple = p * p; multiple <= W; multiple += p)
+                {
+                    prime[multiple] = false;
+                }
+            }
+        }
+
+        int primeCount = 0;
+        for (int i = 2; i <= W; i++)
+        {
+            if (prime[i]) primeCount++;
+        }
+        return primeCount;
+    }
+}
+
+class Solution
+{
+    public static void Main(string[] args)
+    {
+        TextWriter textWriter = new StreamWriter(@System.Environment.GetEnvironmentVariable("OUTPUT_PATH"), true);
+
+        int t = Convert.ToInt32(Console.ReadLine().Trim());
+
+        for (int tItr = 0; tItr < t; tItr++)
+        {
+            int n = Convert.ToInt32(Console.ReadLine().Trim());
+
+            int result = Result.redJohn(n);
+
+            textWriter.WriteLine(result);
+        }
+
+        textWriter.Flush();
+        textWriter.Close();
+    }
+}
