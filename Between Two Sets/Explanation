@@ -1,0 +1,3 @@
+This code calculates the number of integers that are between two sets. 
+multiples of every element in array a and factors of every element in array b.  In order to achieve this, 
+it counts only the numbers that are divisible by every number in a and divides every number in b for each number x between Max() and Min().
