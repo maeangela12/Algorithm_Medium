@@ -1,0 +1,3 @@
+The algorithms compute the total surface area of three-dimensional structures created by stacking cubes on a grid that is represented by matrix A. 
+By comparing each cube's height with that of its neighboring cells in all four directions, 
+it adds the top, bottom, and visible side faces.
